@@ -109,3 +109,17 @@ class Binoculars(object):
                         ).tolist()
         del binoculars_scores
         return pred
+
+    def save_quantized_models(self, output_dir: str):
+        # Save observer model state_dict
+        observer_output_dir = os.path.join(output_dir, "observer_model")
+        os.makedirs(observer_output_dir, exist_ok=True)
+        torch.save(self.observer_model.state_dict(), os.path.join(observer_output_dir, "pytorch_model.bin"))
+
+        # Save performer model state_dict
+        performer_output_dir = os.path.join(output_dir, "performer_model")
+        os.makedirs(performer_output_dir, exist_ok=True)
+        torch.save(self.performer_model.state_dict(), os.path.join(performer_output_dir, "pytorch_model.bin"))
+
+        # Optionally, save tokenizer and configuration
+        self.tokenizer.save_pretrained(observer_output_dir)  # Saving tokenizer
