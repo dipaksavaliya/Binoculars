@@ -4,6 +4,7 @@ import os
 import numpy as np
 import torch
 import transformers
+import gc
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 from .utils import assert_tokenizer_consistency
@@ -86,7 +87,9 @@ class Binoculars(object):
         performer_logits = self.performer_model(**encodings.to(DEVICE_2)).logits
         if DEVICE_1 != "cpu":
             torch.cuda.synchronize()
-        torch.cuda.empty_cache()
+        gc.collect()
+        if torch.cuda.is_available():
+          torch.cuda.empty_cache()
         return observer_logits, performer_logits
 
     def compute_score(self, input_text: Union[list[str], str]) -> Union[float, list[float]]:
