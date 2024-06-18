@@ -23,13 +23,13 @@ BINOCULARS_FPR_THRESHOLD = 0.8536432310785527  # optimized for low-fpr [chosen a
 DEVICE_1 = "cuda:0" if torch.cuda.is_available() else "cpu"
 DEVICE_2 = "cuda:1" if torch.cuda.device_count() > 1 else DEVICE_1
 
-compute_dtype = getattr(torch, "float16")
-bnb_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=compute_dtype,
-        bnb_4bit_use_double_quant=True,
-)
+# compute_dtype = getattr(torch, "float16")
+# bnb_config = BitsAndBytesConfig(
+#         load_in_4bit=True,
+#         bnb_4bit_quant_type="nf4",
+#         bnb_4bit_compute_dtype=compute_dtype,
+#         bnb_4bit_use_double_quant=True,
+# )
 
 
 class Binoculars(object):
@@ -45,13 +45,13 @@ class Binoculars(object):
         self.change_mode(mode)
         self.observer_model = AutoModelForCausalLM.from_pretrained(observer_name_or_path,
                                                                    device_map={"": DEVICE_1},
-                                                                   trust_remote_code=True,
-                                                                   quantization_config=bnb_config
+                                                                   trust_remote_code=True
+                                                                   # quantization_config=bnb_config
                                                                    )
         self.performer_model = AutoModelForCausalLM.from_pretrained(performer_name_or_path,
                                                                     device_map={"": DEVICE_2},
-                                                                    trust_remote_code=True,
-                                                                    quantization_config=bnb_config
+                                                                    trust_remote_code=True
+                                                                    # quantization_config=bnb_config
                                                                     )
         self.observer_model.eval()
         self.performer_model.eval()
