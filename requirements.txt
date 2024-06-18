@@ -1,5 +1,5 @@
 sentencepiece
-transformers -U
+transformers
 datasets
 numpy
 gradio
